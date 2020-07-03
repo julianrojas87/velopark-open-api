@@ -1,0 +1,44 @@
+openapi: "3.0.2"
+info:
+  title: Velopark Geo API
+  description: This API provides the list of Velopark bicycle parkings per region, specified using its NIS code. The list of valid NIS codes can be checked per administrative level on http://belgium.geo.nazkamapps.com/list/level/{LEVEL} where LEVEL can be either "country", "region", "province", "district" or "municipality".
+  version: 1.0.0
+  contact:
+    name: Julián Rojas
+    url: https://julianrojas.org/
+    email: julianandres.rojasmelendez@ugent.be
+  license:
+    name: CC Attribution-ShareAlike 4.0 (CC BY-SA 4.0)
+    url: https://creativecommons.org/licenses/by-sa/4.0/
+tags:
+  - name: parkings
+    description: Infrastructure locations where bicycles can be parked securely
+paths:
+  /api/{NIS_CODE}:
+    servers:
+      - url: https://velopark.ilabt.imec.be/rich-snippets-generator/
+    get:
+      tags:
+        - parkings
+      summary: List of Velopark parkings in a region.
+      description: Returns a list of URIs that correspond with each approved bicycle parking that exists in a given region
+      parameters:
+        - name: NIS_CODE
+          in: path
+          description: NIS code of a Belgian administrative region
+          required: true
+          schema:
+            type: string
+            example: 1000
+      responses:
+        200:
+          description: List of approved Velopark parkings. The list will be empty when there are no approved parkings
+          content:
+            application/json:
+              schema:
+                type: array
+                items: string
+                example: [https://velopark.ilabt.imec.be/data/De-Fietsambassade-Gent_Vooruit, https://velopark.ilabt.imec.be/data/Stad-HAsselt_TR34]
+
+        400:
+          description: Invalid NIS code
